@@ -1,0 +1,39 @@
+# ------------------------------------------------------------------------------
+*.csv
+*.h5
+
+# data directories
+data/*
+
+# Node modules
+app/node_modules*
+
+# Editor hidden directories
+*.DS_Store
+.vscode
+*~
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+.cache
+.pytest_cache
+
+# Distribution / packaging
+.Python
+*.egg-info/
+*.egg
+build/
+dist/
+docs/_build
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints
+
+# Ignore Screenshots
+*.png
+
+#  Pycharm IDE files
+.idea/*
+venv/*
