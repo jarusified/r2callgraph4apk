@@ -32,13 +32,11 @@ def df_filter_by_value(df, column, value, index="name", proxy={}):
     mask = df[index].isin(df[index].unique())
     return df[mask]
 
-
 def df_filter_by_list(df, column, values, proxy={}):
     assert isinstance(values, list)
     column = proxy.get(column, column)
     mask = df[column].isin(values)
     return df[mask]
-
 
 def df_filter_by_search_string(df, column, search_strings, proxy={}):
     column = proxy.get(column, column)
@@ -47,18 +45,15 @@ def df_filter_by_search_string(df, column, search_strings, proxy={}):
     mask = np.isin(ids, unq_ids)
     return df[mask]
 
-
 # ------------------------------------------------------------------------------
 def df_lookup_by_column(df, column, value, proxy={}):
     column = proxy.get(column, column)
     return df.loc[df[column] == value]
 
-
 def df_lookup_and_list(df, col_lookup, val_lookup, col_list, proxy={}):
     col_lookup = proxy.get(col_lookup, col_lookup)
     col_list = proxy.get(col_list, col_list)
     return df_unique(df_lookup_by_column(df, col_lookup, val_lookup), col_list)
-
 
 # ------------------------------------------------------------------------------
 def df_group_by(df, columns, proxy={}):
@@ -69,6 +64,4 @@ def df_group_by(df, columns, proxy={}):
         assert isinstance(columns, str)
         columns = proxy.get(columns, columns)
         return df.groupby([columns])
-
-
 # ------------------------------------------------------------------------------

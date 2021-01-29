@@ -1,8 +1,6 @@
 import os
 import argparse
 
-# ------------------------------------------------------------------------------
-# ------------------------------------------------------------------------------
 class ArgParser:
     """
     Argparser class decodes the arguments passed to
@@ -59,4 +57,3 @@ class ArgParser:
                 s = "App file ({}) not found!".format(self.args["apk"])
                 print(s)
                 exit(1)
-
