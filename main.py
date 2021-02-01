@@ -1,8 +1,10 @@
+import os
 import sys
 
 from version import  __version__
 from utils.logger import init_logger
 from utils.argparser import ArgParser
+from r2callgraph4apk import R2CallGraph4APK
 
 def main():
     # --------------------------------------------------------------------------
@@ -13,8 +15,13 @@ def main():
     init_logger(level=log_level)
 
     args = ArgParser(sys.argv)
+    apk = args.args['apk']
 
-    print(args)
+    assert os.path.splitext(apk)[-1].lower() == ".apk"
+
+    r2callgraph = R2CallGraph4APK(apk=apk)
+
+
 
 
 if __name__ == '__main__':
