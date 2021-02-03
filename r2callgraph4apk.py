@@ -80,6 +80,49 @@ class R2CallGraph4APK:
         for malicious_sha256 in malicious_sha_list:
             R2CallGraph4APK.request_apk_andro(API_KEY, str(malicious_sha256), malicious_folder_path)
 
+    @staticmethod
+    def search_malware_name_and_type(malicious_sha256):
+	# call this function to get name and type through malicious sha256
+        name_file = open(DATA_DIR + '/proposed_name.json', 'r')
+        type_file = open(DATA_DIR + '/proposed_type.json', 'r')
+
+        malware_name = ''
+        malware_type = ''
+        sha = ''
+        line_element_list = list()
+
+        for line in name_file:
+                line_element_list = line.split(':')
+                if(len(line_element_list) > 1):
+                        sha = line_element_list[0];
+                        name = line_element_list[1];
+
+                        sha = sha[3:-2]
+                        name = name[2:-3]
+
+                        if(malicious_sha256.lower() == sha):
+                                malware_name = name
+                                break
+
+
+        for line in type_file:
+                line_element_list = line.split(':')
+                if(len(line_element_list) > 1):
+                        sha = line_element_list[0];
+                        type = line_element_list[1];
+
+                        sha = sha[3:-2]
+                        type = type[2:-3]
+
+                        if(malicious_sha256.lower() == sha):
+                                malware_type = type;
+                                break
+        name_file.close()
+        type_file.close()
+
+        print(malicious_sha256, malware_name, malware_type)
+
+
     def request(self, action):
         """
         Handles requests to an action from the client
