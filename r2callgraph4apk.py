@@ -4,6 +4,7 @@ import pandas as pd
 import requests
 
 from utils.logger import get_logger
+from utils.utils import read_json
 
 LOGGER = get_logger(__name__)
 
@@ -81,47 +82,32 @@ class R2CallGraph4APK:
             R2CallGraph4APK.request_apk_andro(API_KEY, str(malicious_sha256), malicious_folder_path)
 
     @staticmethod
-    def search_malware_name_and_type(malicious_sha256):
-	# call this function to get name and type through malicious sha256
-        name_file = open(DATA_DIR + '/proposed_name.json', 'r')
-        type_file = open(DATA_DIR + '/proposed_type.json', 'r')
+    def get_malware_labels(sha256: str) -> tuple:
+        # Return the (name, type) of a given SHA256
+        #
+        # params:
+        #   sha256: sha256 of a given app
+        # returns:
+        #   (name, type): malware labels (predicted) from AndroZoo labels.
 
-        malware_name = ''
-        malware_type = ''
-        sha = ''
-        line_element_list = list()
+        # TODO: We might need to move the reading to process, if we want to use this functionality.
+        _PROPOSED_NAME_FILE = os.path.join(DATA_DIR, 'labels/names/proposed.json')
+        _PROPOSED_TYPE_FILE = os.path.join(DATA_DIR, 'labels/types/proposed.json')
 
-        for line in name_file:
-                line_element_list = line.split(':')
-                if(len(line_element_list) > 1):
-                        sha = line_element_list[0];
-                        name = line_element_list[1];
+        _name_dict = read_json(_PROPOSED_NAME_FILE)
+        _type_dict = read_json(_PROPOSED_TYPE_FILE)
 
-                        sha = sha[3:-2]
-                        name = name[2:-3]
+        if sha256 in _name_dict:
+            _name = _name_dict[sha256]
+        else:
+            _name = None
 
-                        if(malicious_sha256.lower() == sha):
-                                malware_name = name
-                                break
+        if sha256 in _type_dict:
+            _type = _type_dict[sha256]
+        else:
+            _type = None
 
-
-        for line in type_file:
-                line_element_list = line.split(':')
-                if(len(line_element_list) > 1):
-                        sha = line_element_list[0];
-                        type = line_element_list[1];
-
-                        sha = sha[3:-2]
-                        type = type[2:-3]
-
-                        if(malicious_sha256.lower() == sha):
-                                malware_type = type;
-                                break
-        name_file.close()
-        type_file.close()
-
-        print(malicious_sha256, malware_name, malware_type)
-
+        return (_name, _type)
 
     def request(self, action):
         """
