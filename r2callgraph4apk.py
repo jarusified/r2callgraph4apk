@@ -14,11 +14,15 @@ API_KEY = open(os.path.join(PWD, 'ANDROZOO_API_KEY.txt'), "r").read()
 
 
 class R2CallGraph4APK:
-    def __init__(self, apk: str = ""):
+    def __init__(self, b_apk: str = ""):
         """
+        R2CallGraph4APK class.
+
+        params:
+            b_apk: benign_apk provided by the user
         """
         self.nxg = nx.DiGraph()
-        self.apk = apk
+        self.b_apk = b_apk
 
     def load(self):
         """
@@ -42,7 +46,7 @@ class R2CallGraph4APK:
         url = "https://androzoo.uni.lu/api/download?"
 
         packaged_url = url + 'apikey=' + api_key + '&sha256=' + sha256
-        print("Requesting", packaged_url)
+        print(f"Downloading the apk: {sha256}")
         r = requests.get(packaged_url)
 
         filename = os.path.join(data_dir, sha256 + ".apk")
@@ -51,35 +55,43 @@ class R2CallGraph4APK:
                 fd.write(chunk)
 
     @staticmethod
-    def get_malicious_from_piggyback(b_sha256, data_dir):
+    def get_malicious_from_bank(b_sha256, save_dir):
         # Gets all malicious apks for a given benign apk.
         # The benign and malicious apks are stored in `data/piggyback-all-pairs.csv`
         # see columns, "ORIGINAL_APP" and "PIGGYBACKED_APP".
         #
         # params:
         #     b_sha256: benign apk's sha256
-        #     data_dir: directory to save the file.
+        #     save_dir: directory to save the file.
         _apk_csv = os.path.join(DATA_DIR, 'piggyback-all-pairs.csv')
 
         _df = pd.read_csv(_apk_csv)
 
         malicious_sha_list = _df.loc[_df['ORIGINAL_APP'] == b_sha256]['PIGGYBACKED_APP']
+        
+        print(f"Found {len(malicious_sha_list)} malware(s)!!!")
+        
+        if len(malicious_sha_list) == 0:
+            return []
 
-        benign_folder_path = os.path.join(data_dir, "benign")
-        print(benign_folder_path)
+        # TODO: Write util script to avoid creating if directory exists. 
+        benign_folder_path = os.path.join(save_dir, "benign")
 
         if not os.path.isdir(benign_folder_path):
             os.makedirs(benign_folder_path)
 
         R2CallGraph4APK.request_apk_andro(API_KEY, str(b_sha256), benign_folder_path)
+        print(f"Saved Benign apk in {os.path.join(benign_folder_path, b_sha256)}")
 
-        malicious_folder_path = os.path.join(data_dir, "malicious")
-        print(malicious_folder_path)
+        malicious_folder_path = os.path.join(save_dir, "malicious")
         if not os.path.isdir(malicious_folder_path):
             os.makedirs(malicious_folder_path)
 
-        for malicious_sha256 in malicious_sha_list:
-            R2CallGraph4APK.request_apk_andro(API_KEY, str(malicious_sha256), malicious_folder_path)
+        for m_sha256 in malicious_sha_list:
+            R2CallGraph4APK.request_apk_andro(API_KEY, str(m_sha256), malicious_folder_path)
+            print(f"Saved Malicious apk in {os.path.join(malicious_folder_path, m_sha256)}")
+            
+        return malicious_sha_list
 
     @staticmethod
     def get_malware_labels(sha256: str) -> tuple:

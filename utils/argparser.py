@@ -34,6 +34,9 @@ class ArgParser:
         parser = argparse.ArgumentParser(prefix_chars="--")
         parser.add_argument("--apk", type=str,
                             help="APK file to be visualized.")
+        parser.add_argument("--save_dir", type=str,
+                            help="Save directory for the Benign APK")
+
         return parser
 
     def _verify_parser(self):
