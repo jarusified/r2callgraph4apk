@@ -52,8 +52,8 @@ class ArgParser:
         _has_apk = self.args["apk"] is not None
 
 
-        if _has_apk:
-            if not os.path.isfile(self.args["apk"]):
-                s = "App file ({}) not found!".format(self.args["apk"])
-                print(s)
-                exit(1)
+        # if _has_apk:
+        #     if not os.path.isfile(self.args["apk"]):
+        #         s = "App file ({}) not found!".format(self.args["apk"])
+        #         print(s)
+        #         exit(1)
