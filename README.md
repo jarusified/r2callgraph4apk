@@ -7,6 +7,12 @@
 
 ## Usage
 
+Add this directory to your PYTHONPATH
+
+```sh
+export PYTHONPATH=$(pwd):$PYTHONPATH
+```
+
 The current functionality lets the user download all malicious apk files for a
 given benign apk file, if it exists in the bank.
 

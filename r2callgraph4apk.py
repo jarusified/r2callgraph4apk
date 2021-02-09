@@ -2,13 +2,14 @@ import os
 import networkx as nx
 import pandas as pd
 import requests
+import pathlib
 
 from utils.logger import get_logger
 from utils.utils import read_json
 
 LOGGER = get_logger(__name__)
 
-PWD = os.path.abspath(".")
+PWD = pathlib.Path(__file__).parent.resolve()
 DATA_DIR = os.path.join(PWD, "data")
 API_KEY = open(os.path.join(PWD, 'ANDROZOO_API_KEY.txt'), "r").read()
 

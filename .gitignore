@@ -37,3 +37,6 @@ docs/_build
 #  Pycharm IDE files
 .idea/*
 venv/*
+
+# Project related
+tools/*
