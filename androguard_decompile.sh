@@ -1,0 +1,1 @@
+androguard decompile -o data/cfg/malicious -f png {PATH/TO/APK}

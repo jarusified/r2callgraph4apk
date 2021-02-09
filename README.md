@@ -4,6 +4,11 @@
 - download the label list from this link - https://androzoo.uni.lu/labels
 - unzip the labels.tar.gz to `data` folder
 
+# Install
+
+```
+pip install androguard
+```
 
 ## Usage
 
