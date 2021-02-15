@@ -1,4 +1,6 @@
 import os
+import re
+import csv
 import networkx as nx
 import pandas as pd
 import requests
@@ -121,6 +123,59 @@ class R2CallGraph4APK:
             _type = None
 
         return (_name, _type)
+
+    @staticmethod
+    def get_malware_sha_with_name(malware_name):
+        # params:
+        #   malware_name: specific malware name to extract all the sha keys
+        #       * proposed.json name file has some typo on malware names, such as basebrid, which gives you 502 matching results,
+        #           whereas, full name: basebridge, which gives you 438 matching results.
+        # returns:
+        #   sha256: list of corresponding malware SHA key
+
+        name = ''
+        sha = ''
+        sha256 = []
+        l = []
+
+        _PROPOSED_NAME_FILE = os.path.join(DATA_DIR, 'labels/names/proposed.json')
+        f = open(_PROPOSED_NAME_FILE, "r")
+
+        for line in f:
+            l = line.split(':')
+            if len(l) > 1:
+                sha = l[0]
+                name = l[1]
+
+                sha = sha[3:-2]
+                name = name[2:-3]
+                match = re.match(pattern, name)
+                if match:
+                    sha256.append(sha)
+
+        f.close()
+        return sha256
+
+    @staticmethod
+    def get_piggybacked_apps(malware_sha256_list):
+        # params:
+        #   malware_sha256_list: malware sha list obtained from get_malware_sha_with_name function above
+        #
+        # returns:
+        #   piggybaked_original_sha_list: list of corresponding piggybacked original SHA key
+
+        piggybaked_original_sha_list = list()
+        _apk_csv = os.path.join(DATA_DIR, 'piggyback-all-pairs.csv')
+        with open(_apk_csv, 'r') as csv_file:
+            reader = csv.reader(csv_file)
+            piggy_org_dict = dict((rows[1], rows[0]) for rows in reader)
+
+        for sha in sha256:
+            sha = sha.upper()
+            if(piggy_org_dict.get(sha)):
+                piggybaked_original_sha_list.append(piggy_org_dict.get(sha))
+
+        return piggybaked_original_sha_list
 
     def request(self, action):
         """
