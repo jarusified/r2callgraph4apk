@@ -1,12 +1,15 @@
 import os
 import sys
-from pyinstrument import Profiler
 
 
 from version import  __version__
 from utils.logger import init_logger
 from utils.argparser import ArgParser
 from r2callgraph4apk import R2CallGraph4APK
+from provider_api import APIProvider
+
+R2CG_APP_HOST = os.getenv("CALLFLOW_APP_HOST", "127.0.0.1")
+R2CG_APP_PORT = int(os.getenv("CALLFLOW_APP_PORT", 5000))
 
 
 def main():
@@ -18,32 +21,19 @@ def main():
     init_logger(level=log_level)
 
     args = ArgParser(sys.argv)
-    apk = args.args['apk']
+    malware = args.args['malware']
+    download = args.args['download']
+    analyze = args.args["analyze"]
     save_dir = args.args['save_dir']
 
-    # assert os.path.splitext(apk)[-1].lower() == ".apk"
-
-    r2callgraph = R2CallGraph4APK(b_apk=apk)
-
-    # profiler = Profiler()
-    # profiler.start()
-    m_apks = r2callgraph.get_malicious_from_bank(apk, save_dir)
-
-    if len(m_apks) == 0:
-        print("No Malware apks found in the bank")
-        print("See ya, Bye :(")
-        exit()
-
-    for m_apk in m_apks:
-        (_name, _type) = r2callgraph.get_malware_labels(m_apk)
-        print("------------------------------------------------")
-        print(f"Malware apk: {m_apk}")
-        print(f"Malware name: {_name}")
-        print(f"Malware type: {_type}")
-        print("------------------------------------------------")
-
-    # profiler.stop()
-    # print(profiler.output_text(unicode=True, color=True))
+    if download:
+        assert isinstance(malware, str)
+        r2cg = R2CallGraph4APK(malware_name=malware)
+        r2cg.download(save_dir=save_dir)
+    else:
+        r2cg = APIProvider()
+        r2cg.load()
+        r2cg.start(host=R2CG_APP_HOST, port=R2CG_APP_PORT)
     
 if __name__ == '__main__':
     main()

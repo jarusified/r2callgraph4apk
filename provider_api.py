@@ -18,8 +18,8 @@ from utils.logger import get_logger
 
 
 # Globals
-CF_FOLDER_PATH = os.path.abspath(os.path.dirname(callflow.__file__))
-STATIC_FOLDER_PATH = os.path.join(CF_FOLDER_PATH, "app/dist/")
+FOLDER_PATH = os.path.abspath(os.path.dirname(__file__))
+STATIC_FOLDER_PATH = os.path.join(FOLDER_PATH, "app/dist/")
 LOGGER = get_logger(__name__)
 
 # Create a Flask server.
