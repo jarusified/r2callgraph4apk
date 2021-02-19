@@ -26,13 +26,14 @@ def main():
     analyze = args.args["analyze"]
     save_dir = args.args['save_dir']
 
+    assert isinstance(malware, str)
+
     if download:
-        assert isinstance(malware, str)
         r2cg = R2CallGraph4APK(malware_name=malware)
         r2cg.download(save_dir=save_dir)
-    else:
-        r2cg = APIProvider()
-        r2cg.load()
+    elif analyze:
+        r2cg = APIProvider(malware_name=malware)
+        r2cg.analyze(save_dir)
         r2cg.start(host=R2CG_APP_HOST, port=R2CG_APP_PORT)
     
 if __name__ == '__main__':
