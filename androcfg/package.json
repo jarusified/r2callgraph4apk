@@ -12,7 +12,8 @@
     "react": "^17.0.0",
     "react-dom": "^17.0.0",
     "react-force-graph": "^1.37.6",
-    "react-kapsule": "^2.2.1"
+    "react-kapsule": "^2.2.1",
+    "simple-flexbox": "^2.3.2"
   },
   "devDependencies": {
     "@vitejs/plugin-react-refresh": "^1.1.0",
