@@ -13,7 +13,7 @@ from flask import Flask, request, json, jsonify
 from flask_cors import CORS, cross_origin
 from networkx.readwrite import json_graph
 
-# from utils.np_codec import NumpyEncoder
+from utils.np_codec import NumpyEncoder
 from utils.logger import get_logger
 
 
@@ -97,6 +97,5 @@ class APIProvider(R2CallGraph4APK):
         @cross_origin()
         def cg():
             data = request.json
-            nxg = self.get_cg({"name": "supergraph", **data})
-            result = json_graph.node_link_data(nxg)
+            result = self.request({"name": "cg", **data})
             return APIProvider.emit_json("cg", result)

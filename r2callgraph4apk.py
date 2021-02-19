@@ -219,7 +219,7 @@ class R2CallGraph4APK:
         """
         Handles requests to an action from the client
         """
-        _ACTIONS = ["init"]
+        _ACTIONS = ["cg"]
 
         assert "name" in action
         assert action["name"] in _ACTIONS
