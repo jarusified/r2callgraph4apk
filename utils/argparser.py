@@ -32,11 +32,14 @@ class ArgParser:
         Parse the input arguments.
         """
         parser = argparse.ArgumentParser(prefix_chars="--")
-        parser.add_argument("--apk", type=str,
+        parser.add_argument("--malware", type=str,
                             help="APK file to be visualized.")
         parser.add_argument("--save_dir", type=str,
                             help="Save directory for the Benign APK")
-
+        parser.add_argument("--download", action="store_true", 
+                            help="Download benign and malicious versions of the malware type")
+        parser.add_argument("--analyze", action="store_true",
+                            help="Spawns a visualization tool to study and analyze benign and malicious apks")
         return parser
 
     def _verify_parser(self):
@@ -52,11 +55,16 @@ class ArgParser:
         Returns
         -------
         """
-        _has_apk = self.args["apk"] is not None
+        _has_malware_name = self.args["malware"] is not None
+        _is_download = self.args["download"] is not None
+        _is_analyze = self.args["analyze"] is not None
 
+        if not _has_malware_name:
+            s = "Malware name not provied"
+            print(s)
+            exit(1)
 
-        # if _has_apk:
-        #     if not os.path.isfile(self.args["apk"]):
-        #         s = "App file ({}) not found!".format(self.args["apk"])
-        #         print(s)
-        #         exit(1)
+        if not _is_analyze and not _is_download:
+            s = "Please provide the mode you want to run this script. Available modes are --download | --analyze"
+            print(s)
+            exit(1)
