@@ -5,6 +5,7 @@ import pandas as pd
 import requests
 import pathlib
 import csv
+from networkx.readwrite import json_graph
 from pyinstrument import Profiler
 
 from utils.logger import get_logger
@@ -28,11 +29,14 @@ class R2CallGraph4APK:
         """
         self.nxg = nx.DiGraph()
         self.malware_name = malware_name
+        self.save_dir = None
 
     def analyze(self, save_dir):
         """
         # load the results processed from an apk.
         """
+        # TODO: Generate the cg here.
+        self.save_dir = save_dir
         
 
     def download(self, save_dir):
@@ -223,4 +227,11 @@ class R2CallGraph4APK:
         action_name = action["name"]
 
         if action_name == "cg":
-            pass
+            b_nxg = nx.read_gml(os.path.join(self.save_dir, 'cg/benign.gml'))
+            m_nxg = nx.read_gml(os.path.join(self.save_dir, 'cg/malicious.gml'))
+
+            return {
+                "b_g": json_graph.node_link_data(b_nxg),
+                "m_g": json_graph.node_link_data(m_nxg)
+            }
+
