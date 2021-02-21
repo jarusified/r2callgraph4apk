@@ -245,8 +245,18 @@ class R2CallGraph4APK:
         action_name = action["name"]
 
         if action_name == "cg":
-            b_nxg = nx.read_gml(os.path.join(self.save_dir, 'cg/benign.gml'))
-            m_nxg = nx.read_gml(os.path.join(self.save_dir, 'cg/malicious.gml'))
+            b_path = os.path.join(self.save_dir, 'cg/benign.gml')
+            m_path = os.path.join(self.save_dir, 'cg/malicious.gml')
+
+            if os.path.isfile(b_path):
+                b_nxg = nx.read_gml(b_path)
+            else:
+                b_nxg = nx.DiGraph()
+
+            if os.path.isfile(m_path):
+                m_nxg = nx.read_gml(m_path)
+            else:
+                m_nxg = nx.DiGraph()
 
             return {
                 "b_g": json_graph.node_link_data(b_nxg),
