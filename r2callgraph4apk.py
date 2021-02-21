@@ -15,8 +15,7 @@ LOGGER = get_logger(__name__)
 
 PWD = pathlib.Path(__file__).parent.resolve()
 DATA_DIR = os.path.join(PWD, "data")
-API_KEY_FILE_NAME =  os.getenv("ANDROZOO_API_KEY", os.path.join(PWD, 'ANDROZOO_API_KEY.txt'))
-API_KEY = open(API_KEY_FILE_NAME, "r").read()
+API_KEY_FILE_NAME =  os.getenv("ANDROZOO_API_KEY", os.path.join(PWD, 'androzoo.az'))
 
 MALWARE_NAMES = [] # TODO: Add all andorid malware types.
 
@@ -31,6 +30,27 @@ class R2CallGraph4APK:
         self.nxg = nx.DiGraph()
         self.malware_name = malware_name
         self.save_dir = None
+        (self.api_key, self.input_file) = self._read_az(API_KEY_FILE_NAME)
+
+    def _read_az(self, path):
+        API_KEY_CONFIG_NAME = 'key'
+        INPUT_FILE_CONFIG_NAME = 'input_file'
+        SEPARATOR = '='
+
+        api_key, input_file = None, None
+        if os.path.exists(path):
+            with open(path) as config:
+                for line in config:
+                    if SEPARATOR in line:
+                        key, value = line.split(SEPARATOR)
+                        if key == API_KEY_CONFIG_NAME:
+                            api_key = value.strip()
+                        elif key == INPUT_FILE_CONFIG_NAME:
+                            input_file = value.strip()
+        else:
+            print("Key is not defined. Please, define configuration parameter 'key' in local or global config. Refer https://github.com/ArtemKushnerov/az/blob/master/README.md")
+            raise ValueError
+        return api_key, input_file
 
     def analyze(self, save_dir):
         """
@@ -122,7 +142,7 @@ class R2CallGraph4APK:
         if not os.path.isdir(benign_folder_path):
             os.makedirs(benign_folder_path)
 
-        R2CallGraph4APK.request_apk_andro(API_KEY, str(b_sha256), benign_folder_path)
+        R2CallGraph4APK.request_apk_andro(self.api_key, str(b_sha256), benign_folder_path)
         print(f"\tSaved Benign apk in {os.path.join(benign_folder_path, b_sha256)}")
 
         malicious_folder_path = os.path.join(save_dir, "malicious")
@@ -130,7 +150,7 @@ class R2CallGraph4APK:
             os.makedirs(malicious_folder_path)
 
         for m_sha256 in malicious_sha_list:
-            R2CallGraph4APK.request_apk_andro(API_KEY, str(m_sha256), malicious_folder_path)
+            R2CallGraph4APK.request_apk_andro(self.api_key, str(m_sha256), malicious_folder_path)
             print(f"\tSaved Malicious apk in {os.path.join(malicious_folder_path, m_sha256)}")
             
         return malicious_sha_list

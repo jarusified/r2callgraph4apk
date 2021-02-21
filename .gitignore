@@ -44,4 +44,4 @@ venv/*
 # Project related
 tools/*
 papers/*
-ANDROZOO_API_KEY.txt
+*.az
