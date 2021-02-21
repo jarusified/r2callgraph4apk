@@ -15,7 +15,8 @@ LOGGER = get_logger(__name__)
 
 PWD = pathlib.Path(__file__).parent.resolve()
 DATA_DIR = os.path.join(PWD, "data")
-API_KEY = open(os.path.join(PWD, 'ANDROZOO_API_KEY.txt'), "r").read()
+API_KEY_FILE_NAME =  os.getenv("ANDROZOO_API_KEY", os.path.join(PWD, 'ANDROZOO_API_KEY.txt'))
+API_KEY = open(API_KEY_FILE_NAME, "r").read()
 
 MALWARE_NAMES = [] # TODO: Add all andorid malware types.
 
@@ -74,12 +75,14 @@ class R2CallGraph4APK:
 
     @staticmethod
     def request_apk_andro(api_key: str, sha256: str, data_dir: str):
-        # Request the AndroZoo API for the apk and write it to a directory
-        #
-        # params:
-        #     api_key: Private key to the AndroZoo API
-        #     sha256: sha256 of the apk
-        #    data_dir: directory to save the file.
+        """
+        Request the AndroZoo API for the apk and write it to a directory
+        
+        params:
+            api_key: Private key to the AndroZoo API
+            sha256: sha256 of the apk
+           data_dir: directory to save the file.
+        """
         url = "https://androzoo.uni.lu/api/download?"
 
         packaged_url = url + 'apikey=' + api_key + '&sha256=' + sha256
@@ -93,13 +96,15 @@ class R2CallGraph4APK:
 
     @staticmethod
     def get_malicious_from_bank(b_sha256, save_dir):
-        # Gets all malicious apks for a given benign apk.
-        # The benign and malicious apks are stored in `data/piggyback-all-pairs.csv`
-        # see columns, "ORIGINAL_APP" and "PIGGYBACKED_APP".
-        #
-        # params:
-        #     b_sha256: benign apk's sha256
-        #     save_dir: directory to save the file.
+        """
+        Gets all malicious apks for a given benign apk.
+        The benign and malicious apks are stored in `data/piggyback-all-pairs.csv`
+        see columns, "ORIGINAL_APP" and "PIGGYBACKED_APP".
+        
+        params:
+            b_sha256: benign apk's sha256
+            save_dir: directory to save the file.
+        """
         _apk_csv = os.path.join(DATA_DIR, 'piggyback-all-pairs.csv')
 
         _df = pd.read_csv(_apk_csv)
@@ -132,13 +137,14 @@ class R2CallGraph4APK:
 
     @staticmethod
     def get_malware_labels(sha256: str) -> tuple:
-        # Return the (name, type) of a given SHA256
-        #
-        # params:
-        #   sha256: sha256 of a given app
-        # returns:
-        #   (name, type): malware labels (predicted) from AndroZoo labels.
-
+        """
+        Return the (name, type) of a given SHA256
+        
+        params:
+          sha256: sha256 of a given app
+        returns:
+          (name, type): malware labels (predicted) from AndroZoo labels.
+        """
         # TODO: We might need to move the reading to process, if we want to use this functionality.
         _PROPOSED_NAME_FILE = os.path.join(DATA_DIR, 'labels/names/proposed.json')
         _PROPOSED_TYPE_FILE = os.path.join(DATA_DIR, 'labels/types/proposed.json')
@@ -160,12 +166,17 @@ class R2CallGraph4APK:
 
     @staticmethod
     def get_malware_sha_by_name(malware_name):
-        # params:
-        #   malware_name: specific malware name to extract all the sha keys
-        #   e.g., droidKungFu, basebrid and so on...
-        #
-        # returns:
-        #   sha256: list of corresponding malware SHA key
+        """
+        Match the sha's malware name with the provided `malware_name`.
+        params:
+          malware_name: specific malware name to extract all the sha keys
+          e.g., droidKungFu, basebrid and so on...
+        
+        returns:
+          sha256: list of corresponding malware SHA key
+
+        TODO: Reading line by line is expensive. Need to use `read_json` method.
+        """
 
         name = ''
         sha = ''
@@ -192,16 +203,17 @@ class R2CallGraph4APK:
 
     @staticmethod
     def get_benign_apps(malware_sha256_list):
-        # Note: proposed.json name file has some typo on malware names, such as 
-        # basebrid, which gives you 502 matching results, whereas, full name:
-        # basebridge, which gives you 438 matching results.
-        # 
-        # params:
-        #   malware_sha256_list: malware sha list obtained from get_malware_sha_with_name function above
-        #
-        # returns:
-        #   benign_sha_list: list of corresponding piggybacked original SHA key
-
+        """
+        Note: proposed.json name file has some typo on malware names, such as 
+        basebrid, which gives you 502 matching results, whereas, full name:
+        basebridge, which gives you 438 matching results.
+        
+        params:
+          malware_sha256_list: malware sha list obtained from get_malware_sha_with_name function above
+        
+        returns:
+          benign_sha_list: list of corresponding piggybacked original SHA key
+        """
         benign_sha_list = list()
         _apk_csv = os.path.join(DATA_DIR, 'piggyback-all-pairs.csv')
         with open(_apk_csv, 'r') as csv_file:
@@ -218,6 +230,12 @@ class R2CallGraph4APK:
     def request(self, action):
         """
         Handles requests to an action from the client
+
+        params:
+            action: Action triggered by the server request.
+        
+        return:
+            results in the valid JSON format.
         """
         _ACTIONS = ["cg"]
 

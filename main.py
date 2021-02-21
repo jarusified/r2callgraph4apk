@@ -1,7 +1,6 @@
 import os
 import sys
 
-
 from version import  __version__
 from utils.logger import init_logger
 from utils.argparser import ArgParser
@@ -13,7 +12,9 @@ R2CG_APP_PORT = int(os.getenv("CALLFLOW_APP_PORT", 5000))
 
 
 def main():
-    # --------------------------------------------------------------------------
+    """
+    Entry point.
+    """
     print(f' ----------------- r2callgraph4apk {__version__} -----------------')
 
     # Start logging.
