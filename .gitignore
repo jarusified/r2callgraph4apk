@@ -38,6 +38,10 @@ docs/_build
 .idea/*
 venv/*
 
+# vs code files
+*.code-workspace
+
 # Project related
 tools/*
 papers/*
+ANDROZOO_API_KEY.txt
