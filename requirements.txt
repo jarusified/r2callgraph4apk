@@ -1,2 +1,7 @@
 androguard
 jsonschema
+colorlog
+pyinstrument
+scipy
+numpy
+pandas
