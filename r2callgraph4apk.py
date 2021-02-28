@@ -30,20 +30,30 @@ class R2CallGraph4APK:
     
     def analyze(self, save_dir):
         """
-        # load the results processed from an apk.
+        Load the results processed from an apk.
         """
         # TODO: Generate the cg here.
         self.save_dir = save_dir
 
-        b_dir = os.path.join(self.save_dir, "benign")
-        m_dir = os.path.join(self.save_dir, "malicious")
+    def process(self, save_dir):
+        """
+        Process pipeline for dumping call graphs, 
+        """
+        b_dir = os.path.join(save_dir, "benign")
+        m_dir = os.path.join(save_dir, "malicious")
 
         # TODO: Remove the assumption that there can be only one apk per type.
         self.b_sha = os.listdir(b_dir)[0]
         self.m_sha = os.listdir(m_dir)[0]
 
-        self.b_ag = AndroGuard(os.path.join(b_dir, self.b_sha))
-        self.m_ag = AndroGuard(os.path.join(m_dir, self.m_sha))
+        self.b_path = os.path.join(b_dir, self.b_sha)
+        self.m_path = os.path.join(m_dir, self.m_sha)
+
+        self.b_ag = AndroGuard(self.b_path)
+        self.m_ag = AndroGuard(self.m_path)
+
+        self.b_ag.save_cg()
+        self.m_ag.save_cg()
 
     def download(self, save_dir):
         """

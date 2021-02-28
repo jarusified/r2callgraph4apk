@@ -1,8 +1,11 @@
+import os
+import networkx as nx
 from androguard.misc import AnalyzeAPK
-
 
 class AndroGuard:
     def __init__(self, path):
+        self.path = path
+        self.dir = os.path.dirname(path)
         self.a, self.d, self.dx = AnalyzeAPK(path)
 
     def get_opcodes(self):
@@ -88,6 +91,14 @@ class AndroGuard:
         Returns the call graph of from the `dx` analysis object
         """
         return self.dx.get_call_graph()
+
+    def save_cg(self, fmt="gml"):
+        nxg = self.dx.get_call_graph()
+        
+        if fmt == "gml":
+            nx.write_gml(nxg, os.path.join(self.dir, "cg.gml"))
+
+        return self
 
     def get_method_for_class(self, className):
         """

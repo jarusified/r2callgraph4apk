@@ -36,6 +36,8 @@ class ArgParser:
                             help="APK file to be visualized.")
         parser.add_argument("--save_dir", type=str,
                             help="Save directory for the Benign APK")
+        parser.add_argument("--process", action="store_true", 
+                            help="Process the benign and malicious APK files")
         parser.add_argument("--download", action="store_true", 
                             help="Download benign and malicious versions of the malware type")
         parser.add_argument("--analyze", action="store_true",

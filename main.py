@@ -24,14 +24,17 @@ def main():
     args = ArgParser(sys.argv)
     malware = args.args['malware']
     download = args.args['download']
+    process = args.args['process']
     analyze = args.args["analyze"]
     save_dir = args.args['save_dir']
 
     assert isinstance(malware, str)
 
-    if download:
+    if process:
         r2cg = R2CallGraph4APK(malware_name=malware)
-        r2cg.download(save_dir=save_dir)
+        if download:
+            r2cg.download(save_dir=save_dir)
+        r2cg.process(save_dir=save_dir)        
     elif analyze:
         r2cg = APIProvider(malware_name=malware)
         r2cg.analyze(save_dir)
