@@ -1,3 +1,4 @@
+from lib.androguard import AndroGuard
 import os
 import networkx as nx
 import pathlib
@@ -33,6 +34,16 @@ class R2CallGraph4APK:
         """
         # TODO: Generate the cg here.
         self.save_dir = save_dir
+
+        b_dir = os.path.join(self.save_dir, "benign")
+        m_dir = os.path.join(self.save_dir, "malicious")
+
+        # TODO: Remove the assumption that there can be only one apk per type.
+        self.b_sha = os.listdir(b_dir)[0]
+        self.m_sha = os.listdir(m_dir)[0]
+
+        self.b_ag = AndroGuard(os.path.join(b_dir, self.b_sha))
+        self.m_ag = AndroGuard(os.path.join(m_dir, self.m_sha))
 
     def download(self, save_dir):
         """
@@ -86,22 +97,29 @@ class R2CallGraph4APK:
 
         action_name = action["name"]
 
+        
+
         if action_name == "cg":
-            b_path = os.path.join(self.save_dir, 'cg/benign.gml')
-            m_path = os.path.join(self.save_dir, 'cg/malicious.gml')
+            # b_path = os.path.join(self.save_dir, 'cg/benign.gml')
+            # m_path = os.path.join(self.save_dir, 'cg/malicious.gml')
 
-            if os.path.isfile(b_path):
-                b_nxg = nx.read_gml(b_path)
-            else:
-                b_nxg = nx.DiGraph()
+            # if os.path.isfile(b_path):
+            #     b_nxg = nx.read_gml(b_path)
+            # else:
+            #     b_nxg = nx.DiGraph()
 
-            if os.path.isfile(m_path):
-                m_nxg = nx.read_gml(m_path)
-            else:
-                m_nxg = nx.DiGraph()
+            # if os.path.isfile(m_path):
+            #     m_nxg = nx.read_gml(m_path)
+            # else:
+            #     m_nxg = nx.DiGraph()
+
+            # return {
+            #     "b_g": json_graph.node_link_data(b_nxg),
+            #     "m_g": json_graph.node_link_data(m_nxg)
+            # }
 
             return {
-                "b_g": json_graph.node_link_data(b_nxg),
-                "m_g": json_graph.node_link_data(m_nxg)
+                "b_g": json_graph.node_link_data(self.b_ag.get_cg()),
+                "m_g": json_graph.node_link_data(self.m_ag.get_cg())
             }
 
