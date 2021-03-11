@@ -1,18 +1,44 @@
 # NOTE
 #	Please follow the steps before running
-# 	1. Please change adb_path, and code_path where all bash files are
-#	2. Please check each bash file where to modify before run
-#	3. Please put correct app number and package name in get_appnum.py and get_filename.py
+# 	1. Place all the bashfiles in the same directory with this file
+#   2. Follow these commands: 
+# 			export ADB_PATH=/path/to/adb (/path/to/adb should be replaced with your directory path to adb)
+#			export DESKTOP_PATH=/path/to/desktop (/path/to/desktop should be replaced with directory path to desktop)
+#			export APK_PATH=/path/to/apk (/path/to/apk folder donwloaded by ./r2callgraph4apk.py )
+#	2. check each bash file where to modify before run
+#	3. put correct app number and package name in get_appnum.py and get_filename.py
 
-adb_path='/Users/mina/Library/Android/sdk/platform-tools'
-code_path='/Users/mina/Desktop'
+adb_path=$(echo $ADB_PATH)
+desktop_path=$(echo $DESKTOP_PATH)
+apk_path=$(echo $APK_PATH)
+bashfile_path=$(pwd)
+app_num=$1
+app_name=$2
 
-# download simpleperf and benign apk
-bash download_simpleperf_benignApk.sh
+benign_apkFile_path=$apk_path/$app_num/benign
+malicious_apkFile_path=$apk_path/$app_num/malicious
+
+echo "desktop_path:" $desktop_path
+echo "adb_path:" $adb_path
+echo "bashfile_path:" $bashfile_path
+echo "benign_apkFile_path:" $benign_apkFile_path
+echo "malicious_apkFile_path:" $malicious_apkFile_path
+
+cd $adb_path
+# phone stays awake while plugged
+echo **Stay Awake**
+./adb shell settings put global stay_on_while_plugged_in 3
+
+# STEP1: download simpleperf and benign apk
+cd $bashfile_path
+bash download_simpleperf_benignApk.sh $adb_path $benign_apkFile_path
+
 try=0
+count=0
 
-for i in {1..80}
+for (( i=1; i<=80; i++ ))
 do
+	echo "***ITERATION $i - benign***"
 	cd $adb_path
 	# wifi off
 	echo **WIFI OFF**
@@ -34,32 +60,38 @@ do
 	./adb shell settings put global airplane_mode_on 0
 	./adb shell am broadcast -a android.intent.action.AIRPLANE_MODE
 
-	# run monkey runner and simpleperf
+	# STEP2(monkey run) & 3(simpleperf with benign): run monkey runner and simpleperf
 	# when 80 cycles are done, uninstall benign apk and install malicious apk
-	cd $code_path
-	bash monkeyrunner.sh &
+	cd $bashfile_path
+	bash monkeyrunner.sh $app_name $adb_path &
 	sleep 1
-	bash simpleperf_benign.sh $i 15 &
-	process_id="$process_id $!"
-	echo PID: $process_id
+	bash simpleperf_benign.sh $desktop_path $adb_path $malicious_apkFile_path $app_num $app_name $i 15 &
+	process_id=$!
+	# echo PID: $process_id
 
 	# check whether simpleperf failed
 	# if so, try 10 more times
 	for job in $process_id
 	do
 		wait $job || let "FAIL+=1"
-		echo $job $FAIL
+		# echo $job $FAIL
 	done
 
 	re='^[0-9]+$'
-	if ! [[ $FAIL =~ $re ]] ; then
+	if ! [[ $FAIL =~ $re ]] || [[ $FAIL -eq 0 ]] ; then
+		# echo "Simpleperf Recovered"
+		# reset variables
 		try=0
+		count=0
+		
 	else
-		if [ $FAIL -gt 0 ] ; then
-			echo "FAIL! ($FAIL)"
-			i=$i-1
+		if [[ $FAIL -gt 0 ]] ; then
+			FAIL=0
+			count=$((count+1))
+			echo "FAIL! ($count/10)"
+			i=$((i-1))
 			try=$((try+1))
-			if [ $try -eq 10 ] ; then
+			if [[ $try -eq 10 ]] ; then
 				echo "Simpleperf Error"
 				exit 1
 			fi
@@ -68,8 +100,12 @@ do
 done 
 
 # start malicious app simpleperf monitoring (repeated process like above)
-for i in {1..80}
+# initialize
+try=0
+count=0
+for (( i=1; i<=80; i++ ))
 do
+	echo "***ITERATION $i - malicious***"
 	cd $adb_path
 	# wifi off
 	./adb shell su -c 'svc wifi disable'
@@ -85,29 +121,35 @@ do
 	./adb shell settings put global airplane_mode_on 0
 	./adb shell am broadcast -a android.intent.action.AIRPLANE_MODE
 
-	cd $code_path
-	bash monkeyrunner.sh &
+	# STEP2(monkey run) & 4(simpleperf with malicious): run monkey runner and simpleperf
+	cd $bashfile_path
+	bash monkeyrunner.sh $app_name $adb_path &
 	sleep 1
-	bash simpleperf_malicious.sh $i 15 &
-	process_id="$process_id $!"
-	echo PID: $process_id
+	bash simpleperf_malicious.sh $i 15 $desktop_path $adb_path $app_num $app_name &
+	process_id=$!
+	# echo PID: $process_id
 
 	for job in $process_id
 	do
 		wait $job || let "FAIL+=1"
-		echo $job $FAIL
+		# echo $job $FAIL
 	done
 
 	re='^[0-9]+$'
-	if ! [[ $FAIL =~ $re ]] ; then
+	if ! [[ $FAIL =~ $re ]] || [[ $FAIL -eq 0 ]] ; then
+		# echo "Simpleperf Recovered"
+		# reset variables
 		try=0
-		#echo "PASS: Not a number" >&2;
+		count=0
+
 	else
-		if [ $FAIL -gt 0 ] ; then
-			echo "FAIL! ($FAIL)"
-			i=$i-1
+		if [[ $FAIL -gt 0 ]] ; then
+			FAIL=0
+			count=$((count+1))
+			echo "FAIL! ($count/10)"
+			i=$((i-1))
 			try=$((try+1))
-			if [ $try -eq 10 ] ; then
+			if [[ $try -eq 10 ]] ; then
 				echo "Simpleperf Error"
 				exit 1
 			fi

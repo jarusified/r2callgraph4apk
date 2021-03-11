@@ -1,2 +1,0 @@
-filename = 'fileman'
-print(filename)

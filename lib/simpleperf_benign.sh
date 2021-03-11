@@ -1,36 +1,26 @@
 # simpleperf_benign.sh
 
-echo ADB AUTOMATION STEP3:
-echo 		1. Put correct app name in python file to get pid, and change app_num
-echo 		2. Extract pid using ps command
-echo		3. Run Simpleperf with benign app
-echo [START]
-
-# NOTE
-#	please change the list below corresponding to your setup
-#	- variable desktop_path
-#	- variable adb_path
-#	- variable apk_path
-#	- variable output_dir (folder to have all csv files collected by Simpleperf)
+echo "STEP3:"
+echo "		1. Extract pid using ps command"
+echo "		2. Run Simpleperf with benign app"
+echo "[START]"
 
 event_group[0]='branch-load-misses,branch-loads,dTLB-loads,dTLB-stores'
 event_group[1]='iTLB-loads,iTLB-stores,L1-dcache-load-misses,L1-dcache-store-misses'
 event_group[2]='L1-dcache-stores,L1-icache-load-misses,L1-icache-store-misses,node-loads'
 event_group[3]='node-stores,branch-instructions,branch-misses,instructions'
 
-echo ${event_group[@]}
+desktop_path=$1
+adb_path=$2
+apk_path=$3
+app_num=$4
+app_name=$5
 
-desktop_path='/Users/mina/Desktop'
-adb_path='/Users/mina/Library/Android/sdk/platform-tools'
-# malicious apk path
-apk_path="/Users/mina/Desktop/Mina/Graduate_School/Research/malware/AndroZoo/droidkungfu_w_benign/$app_num/malicious"
-
-# read apk package name, and app number from python files
-cd $desktop_path
-app_name=$(python3 get_filename.py)
-echo $app_name
-app_num=$(python3 get_appnum.py)
-echo $app_num
+echo "desktop_path:" $desktop_path
+echo "adb_path:" $adb_path
+echo "apk_path:" $apk_path
+echo "desktop_path:" $app_num
+echo "adb_path:" $app_name
 
 # set up the directory for output csv files
 output_dir="$desktop_path/benign_output/$app_num$app_name"
@@ -43,12 +33,11 @@ do
 	cd $adb_path
 	pid_str=$(./adb shell "su -c 'ps | grep $app_name'")
 	echo $pid_str
-	 
-	cd $desktop_path
-	pid=$(python3 extract_pid.py $pid_str)
-	echo $pid
 
-	# check if pid is extracted (try 10 times)
+	pid=$(echo $pid_str | awk '{print $2}')
+	echo "pid:" $pid
+	 
+	# check if pid is extracted
 	re='^[0-9]+$'
 	if ! [[ $pid =~ $re ]] ; then
 		echo "error: Not a number" >&2;
@@ -62,8 +51,8 @@ do
 done
 
 
-cycle=$1
-duration=$2
+cycle=$6
+duration=$7
 
 # event group automation based on the cycle #
 divider=20
@@ -102,13 +91,10 @@ then
 		fi
 	done
 
-	echo [***DONE Benign Testing***]
-	echo ...Benign data transfer complete
-	echo ...Install malicious apk
-
-	#apk_path="/Users/mina/Desktop/Mina/Graduate_School/Research/malware/AndroZoo/droidkungfu_w_benign/$app_num/malicious"
-
-	#./adb shell mkdir /sdcard/Download/malicious
+	echo "[DONE STEP3]"
+	echo "...Completed Benign Apkfile Testing and Data Collection"
+	echo "...Completed benign data transfer"
+	echo "...Installing malicious apk"
 	  
 	cd $apk_path
 	apk_filename=$(ls $apk_path)
@@ -117,12 +103,4 @@ then
 	cd $adb_path
 	./adb install $apk_path
 
-	#./adb push $apk_path /sdcard/Download/malicious
-
-	echo [DONE STEP3]
-	echo ...malicious app is set
-	echo ...start running STEP4
-
 fi
-
-exit 0

@@ -1,36 +1,24 @@
 #!/bin/bash
 # monkeyrunner.sh
 
-echo ADB AUTOMATION STEP2:
-echo 		1. Put correct app name to get package name in python files
-echo 		2. Extract package name only
-echo 		3. Run MonkeyRunner
-echo [START]
+echo "STEP2:"
+echo "		1. Extract package name from 'pm list packages' command"
+echo "		2. Run MonkeyRunner with the package name"
+echo "[START]"
 
-# NOTE
-#	please change the list below corresponding to your setup
-#	- variable desktop_path
-#	- variable adb_path
-#	- variable apk_path
-
-desktop_path='/Users/mina/Desktop'
-adb_path='/Users/mina/Library/Android/sdk/platform-tools'
-cd $desktop_path
-
-# app_name to obtain package name
-app_name=$(python3 get_filename.py)
-echo $app_name
+app_name=$1
+adb_path=$2
 
 cd $adb_path
 package_name_str=$(./adb shell pm list packages | grep $app_name)
-echo $package_name_str
+# echo $package_name_str
  
 package_name=$(echo $package_name_str | tr ":" "\n")
 
 cd $adb_path
 for pname in $package_name
 do
-	echo "1>$pname"
+	# echo "1>$pname"
 	if [ $pname != "package" ]
 	then
 		#remove white space
@@ -39,5 +27,3 @@ do
 		./adb shell monkey -p $temp1 -v 1050 -s 42
 	fi
 done
-
-echo [DONE STEP2]
