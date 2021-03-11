@@ -87,7 +87,16 @@ class AndroGuard:
         return:
             metadata : JSON object
         """
-        pass
+        return {
+            "app_name": self.a.get_app_name(),
+            "declared_permissions": self.a.get_declared_permissions(),
+            "files": self.a.files,
+            "libraries": self.a.get_libraries(),
+            "package": self.a.get_package(),
+            "requested_permissions": self.a.get_requested_permissions(),
+            "services": self.a.get_services(),
+            "signature": self.a.get_signature(),
+        }
 
     def get_cg(self):
         """
