@@ -1,17 +1,11 @@
 import React, { useRef, useState } from "react";
 import "./App.css";
 import { Column, Row } from "simple-flexbox";
-
 import { ForceGraph3D } from "react-force-graph";
 
 import APIService from "./lib/routing/APIService";
 
-const R2CG_APP_HOST = "127.0.0.1"
-const R2CG_APP_PORT = 5000
-
 function App() {
-	const URL = R2CG_APP_HOST + "/" + R2CG_APP_PORT;
-
 	const [bData, setBData] = useState({});
 	const [mData, setMData] = useState({});
 	const [isLoading, setIsLoading] = useState(true);

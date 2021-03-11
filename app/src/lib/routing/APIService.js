@@ -5,6 +5,10 @@
  * SPDX-License-Identifier: MIT
  */
 
+
+const R2CG_APP_HOST = "http://localhost";
+const R2CG_APP_PORT = 5000;
+
 class APIService {
 	/**
      * API service for CallFlow.
@@ -12,7 +16,7 @@ class APIService {
 	 * fetch API is being used to trigger the requests.
      */
 	constructor() {
-		this.url = "http://localhost:5000/"; // For local
+		this.url = R2CG_APP_HOST + ":" +R2CG_APP_PORT; // For local
 	}
   
 	/**
