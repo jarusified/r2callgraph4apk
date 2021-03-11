@@ -16,7 +16,7 @@ class APIService {
 	 * fetch API is being used to trigger the requests.
      */
 	constructor() {
-		this.url = R2CG_APP_HOST + ":" +R2CG_APP_PORT; // For local
+		this.url = R2CG_APP_HOST + ":" +R2CG_APP_PORT + "/"; // For local
 	}
   
 	/**

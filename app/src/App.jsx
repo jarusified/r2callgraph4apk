@@ -13,12 +13,14 @@ function App() {
 	const fgRef = useRef();
 
 	async function fetchCG() {
-		const response = await APIService.POSTRequest("cg");
-		setMData(response['m_g']);
-		setBData(response['b_g']);
+		const shas = await APIService.GETRequest("init");
+
+		const b_cg = await APIService.POSTRequest("cg", { "sha": shas["b_sha"][0]});
+		setBData(b_cg);
+		const m_cg = await APIService.POSTRequest("cg", { "sha": shas["m_sha"][0]});
+		setMData(m_cg);
 		setIsLoading(false);
-		console.log(response);
-		return response
+		return;
 	}
 
 	if (isLoading) {
@@ -29,7 +31,7 @@ function App() {
 		return (
 			<Row className="App">
 				<Column className="graph-view">
-					<Row justifyContent="center" style={{ fontSize: '30px' }}> Benign APK</Row>
+					<Row justifyContent="center" style={{ fontSize: '30px' }}> Benign APK : </Row>
 					<ForceGraph3D
 						ref={fgRef}
 						graphData={bData}

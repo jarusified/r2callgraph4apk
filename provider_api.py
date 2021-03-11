@@ -93,9 +93,16 @@ class APIProvider(R2CallGraph4APK):
         def index():
             return app.send_static_file("index.html")
 
+        @app.route("/init", methods=["GET"])
+        @cross_origin()
+        def init():
+            result = self.request({"name": "init"})
+            return APIProvider.emit_json("init", result)
+
         @app.route("/cg", methods=["POST"])
         @cross_origin()
         def cg():
             data = request.json
+            print(data)
             result = self.request({"name": "cg", **data})
             return APIProvider.emit_json("cg", result)

@@ -25,20 +25,21 @@ class R2CallGraph4APK:
         params:
             b_apk: benign_apk provided by the user
         """
-        self.b_nxg = {} # map of benign nxg
-        self.m_nxg = {}
+        self.nxg = {} # map of nxg  {sha: <nx.DiGraph>}
         self.malware_name = malware_name
         self.save_dir = save_dir
 
         b_dir = os.path.join(self.save_dir, "benign")
         m_dir = os.path.join(self.save_dir, "malicious")
 
-        # TODO: Remove the assumption that there can be only one apk per type.
-        self.b_shas = get_apks_from_path(b_dir)
-        self.m_shas = get_apks_from_path(m_dir)
+        self.b_sha_paths = get_apks_from_path(b_dir)
+        self.m_sha_paths = get_apks_from_path(m_dir)
 
-        self.b_ag = self._init_androguard(b_dir, self.b_shas)
-        self.m_ag = self._init_androguard(m_dir, self.m_shas)
+        self.b_shas = [_sha.split("/")[-1].split(".")[0] for _sha in self.b_sha_paths]
+        self.m_shas = [_sha.split("/")[-1].split(".")[0] for _sha in self.m_sha_paths]
+
+        self.b_ag = self._init_androguard(b_dir, self.b_sha_paths)
+        self.m_ag = self._init_androguard(m_dir, self.m_sha_paths)
     
     def _init_androguard(self, directory, shas):
         ret = {}
@@ -53,11 +54,11 @@ class R2CallGraph4APK:
         """
         for apk in self.b_ag:
             ag = self.b_ag[apk]
-            self.b_nxg[ag.sha] = ag.read_cg()
+            self.nxg[ag.sha] = ag.read_cg()
 
         for apk in self.m_ag:
             ag = self.m_ag[apk]
-            self.m_nxg[ag.sha] = ag.read_cg()
+            self.nxg[ag.sha] = ag.read_cg()
 
     def process(self):
         """
@@ -115,18 +116,20 @@ class R2CallGraph4APK:
         return:
             results in the valid JSON format.
         """
-        _ACTIONS = ["cg"]
+        _ACTIONS = ["cg", "init"]
 
         assert "name" in action
         assert action["name"] in _ACTIONS
 
         action_name = action["name"]
 
-        if action_name == "cg":
-            b_nxg = self.b_nxg[list(self.b_nxg.keys())[0]] # TODO: Generalize here....
-            m_nxg = self.m_nxg[list(self.m_nxg.keys())[0]]
+        if action_name == "init":
             return {
-                "b_g": json_graph.node_link_data(b_nxg),
-                "m_g": json_graph.node_link_data(m_nxg)
+                "b_sha": self.b_shas,
+                "m_sha": self.m_shas
             }
+
+        if action_name == "cg":
+            _nxg = self.nxg[action["sha"]]
+            return json_graph.node_link_data(_nxg)
 
