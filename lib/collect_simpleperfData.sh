@@ -5,8 +5,7 @@
 # 			export ADB_PATH=/path/to/adb (/path/to/adb should be replaced with your directory path to adb)
 #			export DESKTOP_PATH=/path/to/desktop (/path/to/desktop should be replaced with directory path to desktop)
 #			export APK_PATH=/path/to/apk (/path/to/apk folder donwloaded by ./r2callgraph4apk.py )
-#	2. check each bash file where to modify before run
-#	3. put correct app number and package name in get_appnum.py and get_filename.py
+#	3. put correct app number and package name as arguments when running collect_simpleperfData.sh
 
 adb_path=$(echo $ADB_PATH)
 desktop_path=$(echo $DESKTOP_PATH)
