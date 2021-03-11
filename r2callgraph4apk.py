@@ -6,6 +6,7 @@ from networkx.readwrite import json_graph
 from pyinstrument import Profiler
 
 from utils.logger import get_logger
+from utils.utils import get_apks_from_path
 from lib.androzoo import AndroZoo
 
 LOGGER = get_logger(__name__)
@@ -17,43 +18,57 @@ API_KEY_FILE_NAME =  os.getenv("ANDROZOO_API_KEY", os.path.join(PWD, 'androzoo.a
 MALWARE_NAMES = [] # TODO: Add all andorid malware types.
 
 class R2CallGraph4APK:
-    def __init__(self, malware_name: str = ""):
+    def __init__(self, malware_name: str, save_dir: str):
         """
         R2CallGraph4APK class.
 
         params:
             b_apk: benign_apk provided by the user
         """
-        self.nxg = nx.DiGraph()
+        self.b_nxg = {} # map of benign nxg
+        self.m_nxg = {}
         self.malware_name = malware_name
-        self.save_dir = None
+        self.save_dir = save_dir
+
+        b_dir = os.path.join(self.save_dir, "benign")
+        m_dir = os.path.join(self.save_dir, "malicious")
+
+        # TODO: Remove the assumption that there can be only one apk per type.
+        self.b_shas = get_apks_from_path(b_dir)
+        self.m_shas = get_apks_from_path(m_dir)
+
+        self.b_ag = self._init_androguard(b_dir, self.b_shas)
+        self.m_ag = self._init_androguard(m_dir, self.m_shas)
     
-    def analyze(self, save_dir):
+    def _init_androguard(self, directory, shas):
+        ret = {}
+        for sha in shas:
+            path = os.path.join(directory, sha)
+            ret[sha] = AndroGuard(sha, path)
+        return ret
+    
+    def analyze(self):
         """
         Load the results processed from an apk.
         """
-        # TODO: Generate the cg here.
-        self.save_dir = save_dir
+        for apk in self.b_ag:
+            ag = self.b_ag[apk]
+            self.b_nxg[ag.sha] = ag.read_cg()
 
-    def process(self, save_dir):
+        for apk in self.m_ag:
+            ag = self.m_ag[apk]
+            self.m_nxg[ag.sha] = ag.read_cg()
+
+    def process(self):
         """
         Process pipeline for dumping call graphs, 
         """
-        b_dir = os.path.join(save_dir, "benign")
-        m_dir = os.path.join(save_dir, "malicious")
 
-        # TODO: Remove the assumption that there can be only one apk per type.
-        self.b_sha = os.listdir(b_dir)[0]
-        self.m_sha = os.listdir(m_dir)[0]
-
-        self.b_path = os.path.join(b_dir, self.b_sha)
-        self.m_path = os.path.join(m_dir, self.m_sha)
-
-        self.b_ag = AndroGuard(self.b_path)
-        self.m_ag = AndroGuard(self.m_path)
-
-        self.b_ag.save_cg()
-        self.m_ag.save_cg()
+        for b_sha in self.b_shas:
+            self.b_ag[b_sha].save_cg()
+        
+        for m_sha in self.m_shas:
+            self.m_ag[m_sha].save_cg()
 
     def download(self, save_dir):
         """
@@ -107,29 +122,11 @@ class R2CallGraph4APK:
 
         action_name = action["name"]
 
-        
-
         if action_name == "cg":
-            # b_path = os.path.join(self.save_dir, 'cg/benign.gml')
-            # m_path = os.path.join(self.save_dir, 'cg/malicious.gml')
-
-            # if os.path.isfile(b_path):
-            #     b_nxg = nx.read_gml(b_path)
-            # else:
-            #     b_nxg = nx.DiGraph()
-
-            # if os.path.isfile(m_path):
-            #     m_nxg = nx.read_gml(m_path)
-            # else:
-            #     m_nxg = nx.DiGraph()
-
-            # return {
-            #     "b_g": json_graph.node_link_data(b_nxg),
-            #     "m_g": json_graph.node_link_data(m_nxg)
-            # }
-
+            b_nxg = self.b_nxg[list(self.b_nxg.keys())[0]] # TODO: Generalize here....
+            m_nxg = self.m_nxg[list(self.m_nxg.keys())[0]]
             return {
-                "b_g": json_graph.node_link_data(self.b_ag.get_cg()),
-                "m_g": json_graph.node_link_data(self.m_ag.get_cg())
+                "b_g": json_graph.node_link_data(b_nxg),
+                "m_g": json_graph.node_link_data(m_nxg)
             }
 

@@ -31,13 +31,13 @@ def main():
     assert isinstance(malware, str)
 
     if process:
-        r2cg = R2CallGraph4APK(malware_name=malware)
+        r2cg = R2CallGraph4APK(malware_name=malware, save_dir=save_dir)
         if download:
-            r2cg.download(save_dir=save_dir)
-        r2cg.process(save_dir=save_dir)        
+            r2cg.download()
+        r2cg.process()        
     elif analyze:
-        r2cg = APIProvider(malware_name=malware)
-        r2cg.analyze(save_dir)
+        r2cg = APIProvider(malware_name=malware, save_dir=save_dir)
+        r2cg.analyze()
         r2cg.start(host=R2CG_APP_HOST, port=R2CG_APP_PORT)
     
 if __name__ == '__main__':

@@ -40,13 +40,13 @@ class APIProvider(R2CallGraph4APK):
         b)
     """
 
-    def __init__(self, malware_name: str) -> None:
+    def __init__(self, malware_name: str, save_dir: str) -> None:
         """
         Constructor to APIProvider class.
 
         :param config: CallFlow config object
         """
-        super().__init__(malware_name)
+        super().__init__(malware_name, save_dir)
         self.handle_routes()
 
     def start(self, host: str, port: int) -> None:

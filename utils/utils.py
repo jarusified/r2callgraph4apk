@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 from scipy import stats
+from pathlib import Path 
 
 # ------------------------------------------------------------------------------
 # statistics utils
@@ -299,3 +300,17 @@ def nx_leaves_below(nxg, node):
             [],
         )
     )
+
+# --------------------------------------------------------------------------
+# r2callgraph4apk utilities.
+# --------------------------------------------------------------------------
+
+def get_apks_from_path(path):
+    ALLOW_EXTENSIONS = [".apk"]
+
+    allowed_files = []    
+    for ext in ALLOW_EXTENSIONS:
+        allowed_files.extend([
+            str(file) for file in Path(path).iterdir() if file.name.endswith(".apk")
+        ])
+    return allowed_files 

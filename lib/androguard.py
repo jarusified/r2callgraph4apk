@@ -1,12 +1,15 @@
+from logging import Logger
 import os
 import networkx as nx
 from androguard.misc import AnalyzeAPK
 
 class AndroGuard:
-    def __init__(self, path):
+    def __init__(self, sha, path):
         self.path = path
         self.dir = os.path.dirname(path)
         self.a, self.d, self.dx = AnalyzeAPK(path)
+        self.sha = sha.split('/')[-1].split('.')[0] # TODO: this is wrong...
+        self.nxg = None
 
     def get_opcodes(self):
         """
@@ -92,11 +95,21 @@ class AndroGuard:
         """
         return self.dx.get_call_graph()
 
+    def read_cg(self):
+        path = os.path.join(self.dir, f"{self.sha}.gml")
+        nxg = nx.read_gml(path)
+
+        return nxg
+
     def save_cg(self, fmt="gml"):
         nxg = self.dx.get_call_graph()
+        path = os.path.join(self.dir, f"{self.sha}.gml")
+
+        print(f"Dumping the call graph to {path}.")
+        print(f"Call Graph contains {len(nxg.nodes())} nodes and {len(nxg.edges())}")
         
         if fmt == "gml":
-            nx.write_gml(nxg, os.path.join(self.dir, "cg.gml"))
+            nx.write_gml(nxg, path, stringizer=str)
 
         return self
 
