@@ -23,6 +23,7 @@ function App() {
 		setMData(response['m_g']);
 		setBData(response['b_g']);
 		setIsLoading(false);
+		console.log(response);
 		return response
 	}
 
@@ -43,6 +44,7 @@ function App() {
 						linkHoverPrecision={10}
 						onLinkClick={(link) => fgRef.current.emitParticle(link)}
 						width={window.innerWidth/2}
+						nodeColor="blue"
 
 					/>
 				</Column>
