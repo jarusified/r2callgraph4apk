@@ -314,3 +314,9 @@ def get_apks_from_path(path):
             str(file) for file in Path(path).iterdir() if file.name.endswith(".apk")
         ])
     return allowed_files 
+
+def get_filename_from_path(filepath):
+    """
+    Truncates the parents and the extension from a filepath.
+    """
+    return filepath.split("/")[-1].split(".")[0]

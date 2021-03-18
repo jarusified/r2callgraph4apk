@@ -6,7 +6,7 @@ from networkx.readwrite import json_graph
 from pyinstrument import Profiler
 
 from utils.logger import get_logger
-from utils.utils import get_apks_from_path
+from utils.utils import get_apks_from_path, get_filename_from_path
 from lib.androzoo import AndroZoo
 
 LOGGER = get_logger(__name__)
@@ -35,8 +35,8 @@ class R2CallGraph4APK:
         self.b_sha_paths = get_apks_from_path(b_dir)
         self.m_sha_paths = get_apks_from_path(m_dir)
 
-        self.b_shas = [_sha.split("/")[-1].split(".")[0] for _sha in self.b_sha_paths]
-        self.m_shas = [_sha.split("/")[-1].split(".")[0] for _sha in self.m_sha_paths]
+        self.b_shas = [get_filename_from_path(path) for path in self.b_sha_paths]
+        self.m_shas = [get_filename_from_path(path) for path in self.m_sha_paths]
 
         self.b_ag = self._init_androguard(b_dir, self.b_sha_paths)
         self.m_ag = self._init_androguard(m_dir, self.m_sha_paths)
@@ -45,7 +45,7 @@ class R2CallGraph4APK:
         ret = {}
         for sha in shas:
             path = os.path.join(directory, sha)
-            ret[sha] = AndroGuard(sha, path)
+            ret[get_filename_from_path(sha)] = AndroGuard(sha, path)
         return ret
     
     def analyze(self):
@@ -132,4 +132,7 @@ class R2CallGraph4APK:
         if action_name == "cg":
             _nxg = self.nxg[action["sha"]]
             return json_graph.node_link_data(_nxg)
+
+        # elif action_name == "metadata":
+        #     return self.
 
