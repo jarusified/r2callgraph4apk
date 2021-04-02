@@ -39,6 +39,9 @@ def main():
         r2cg = APIProvider(malware_name=malware, save_dir=save_dir)
         r2cg.analyze()
         r2cg.start(host=R2CG_APP_HOST, port=R2CG_APP_PORT)
+    elif download:
+        r2cg = R2CallGraph4APK(malware_name=malware, save_dir=save_dir)
+        r2cg.download()
     
 if __name__ == '__main__':
     main()

@@ -32,14 +32,14 @@ class R2CallGraph4APK:
         b_dir = os.path.join(self.save_dir, "benign")
         m_dir = os.path.join(self.save_dir, "malicious")
 
-        self.b_sha_paths = get_apks_from_path(b_dir)
-        self.m_sha_paths = get_apks_from_path(m_dir)
+        # self.b_sha_paths = get_apks_from_path(b_dir)
+        # self.m_sha_paths = get_apks_from_path(m_dir)
 
-        self.b_shas = [get_filename_from_path(path) for path in self.b_sha_paths]
-        self.m_shas = [get_filename_from_path(path) for path in self.m_sha_paths]
+        # self.b_shas = [get_filename_from_path(path) for path in self.b_sha_paths]
+        # self.m_shas = [get_filename_from_path(path) for path in self.m_sha_paths]
 
-        self.b_ag = self._init_androguard(b_dir, self.b_sha_paths)
-        self.m_ag = self._init_androguard(m_dir, self.m_sha_paths)
+        # self.b_ag = self._init_androguard(b_dir, self.b_sha_paths)
+        # self.m_ag = self._init_androguard(m_dir, self.m_sha_paths)
     
     def _init_androguard(self, directory, shas):
         ret = {}
