@@ -1,112 +1,81 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow strict-local
- */
+import React, {useEffect} from 'react';
+import {StyleSheet, View, ActivityIndicator} from 'react-native';
+import {NavigationContainer} from '@react-navigation/native';
 
-import React from 'react';
-import type {Node} from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
-
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
-
-const Section = ({children, title}): Node => {
-  const isDarkMode = useColorScheme() === 'dark';
-  return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
-  );
-};
-
-const App: () => Node = () => {
-  const isDarkMode = useColorScheme() === 'dark';
-
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
-
-  return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.js</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
-  );
-};
+import LocalStorage from './src/lib/storages/LocalStorage';
 
 const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
   },
 });
+
+function App() {
+  // For determining screen transition
+  const routeNameRef = React.useRef();
+  const navigationRef = React.useRef(null);
+  const isFirstAppLaunch = React.useRef(false);
+
+  const [
+    isFirstAppLaunchResolved,
+    setIsFirstAppLaunchResolved,
+  ] = React.useState(false);
+
+  useEffect(() => {
+    LocalStorage.isFirstAppLaunch()
+      .then(isFirst => {
+        if (isFirst) {
+          isFirstAppLaunch.current = true;
+          LocalStorage.unsetFirstAppLaunch();
+        }
+        setIsFirstAppLaunchResolved(true);
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  }, []);
+
+  // Callback that's triggered when there's a screen transition
+  const onStateChange = () => {
+    const previousRouteName = routeNameRef.current;
+    console.log('Previous state was: ', previousRouteName);
+
+    const currentRoute = navigationRef.current.getCurrentRoute();
+    if (!currentRoute) {
+      return;
+    }
+
+    const currentRouteName = currentRoute.name;
+
+    // Save the current route name for later comparision
+    routeNameRef.current = currentRouteName;
+  };
+
+  function pickScreen() {
+    if (!isFirstAppLaunchResolved) {
+      return 'LOADING_SCREEN';
+    }
+    return 'LOGIN_SCREEN';
+  }
+
+  return (
+    <NavigationContainer ref={navigationRef} onStateChange={onStateChange}>
+      {(() => {
+        switch (pickScreen()) {
+          case 'PROFILE_HOME_SCREEN':
+            return <TabNavigatorHome />;
+          case 'LOADING_SCREEN':
+          default:
+            return (
+              <View style={styles.loadingContainer}>
+                <ActivityIndicator size="large" color="#000" />
+              </View>
+            );
+        }
+      })()}
+    </NavigationContainer>
+  );
+}
 
 export default App;
