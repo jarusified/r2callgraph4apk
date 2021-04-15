@@ -2,7 +2,8 @@ import React, {useEffect} from 'react';
 import {StyleSheet, View, ActivityIndicator} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 
-import LocalStorage from './src/lib/storages/LocalStorage';
+import LocalStorage from 'lib/storages/LocalStorage';
+import StackNavigatorHome from './src/nav/StackNavigatorHome';
 
 const styles = StyleSheet.create({
   loadingContainer: {
@@ -56,15 +57,15 @@ function App() {
     if (!isFirstAppLaunchResolved) {
       return 'LOADING_SCREEN';
     }
-    return 'LOGIN_SCREEN';
+    return 'HOME_SCREEN';
   }
 
   return (
     <NavigationContainer ref={navigationRef} onStateChange={onStateChange}>
       {(() => {
         switch (pickScreen()) {
-          case 'PROFILE_HOME_SCREEN':
-            return <TabNavigatorHome />;
+          case 'HOME_SCREEN':
+            return <StackNavigatorHome />;
           case 'LOADING_SCREEN':
           default:
             return (
