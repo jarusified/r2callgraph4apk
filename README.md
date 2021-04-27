@@ -9,8 +9,9 @@ Python >=3.7
 Nodejs >= v12.16.2
 Yarn >= 1.21.1
 ## Androzoo: Malicious/Benign APKs  (Optional)
-Data/APKs that we have tested our app as case studies can be found in the `data`
-folder. If you would like to get new data, read on.
+Data/APKs that we have tested our app as case studies can be found
+(here)[https://drive.google.com/file/d/1A8bOhEN2zvAwiuBMerF1FwhAuMzQH933/view?usp=sharing]
+(10 DroidKungFu apks) as zip file. If you would like to get new data, read on.
 
 Androzoo is a dataset of Android APKs that have been tagged as "malware" by
 several online platforms like VirusTotal, Anti Virus software. They provide a
