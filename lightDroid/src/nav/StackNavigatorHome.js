@@ -6,7 +6,7 @@ import Home from '../screens/home/Home';
 
 const Stack = createStackNavigator();
 
-export default function StackNavigatorHome({navigation, route}) {
+export default function StackNavigatorHome() {
   const isFocusedRef = React.useRef(true);
   isFocusedRef.current = useIsFocused();
 

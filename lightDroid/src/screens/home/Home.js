@@ -66,7 +66,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export default function Home({navigation}) {
+export default function Home() {
   const [appList, setAppList] = useState([]);
   /**
    * TODO: ING-82: Fix force re-render when update occurs
@@ -147,7 +147,6 @@ export default function Home({navigation}) {
         expanded: false,
       };
     });
-    console.log(data);
     setAppList(data);
   };
 
