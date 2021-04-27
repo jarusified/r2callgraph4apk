@@ -1,0 +1,81 @@
+{
+    "env": {
+        "es6": true,
+        "node": true
+    },
+    "extends": [
+        "eslint:recommended",
+        "plugin:react/recommended",
+        "airbnb"
+    ],
+    "globals": {
+        "Atomics": "readonly",
+        "SharedArrayBuffer": "readonly",
+        "fetch": "readonly"
+    },
+    "parserOptions": {
+        "ecmaFeatures": {
+            "jsx": true
+        },
+        "ecmaVersion": 2018,
+        "sourceType": "module"
+    },
+    "parser": "babel-eslint",
+    "plugins": [
+        "react",
+        "react-native"
+    ],
+    // All the rules are defined in https://eslint.org/docs/rules/
+    "rules": {
+        "react/prop-types": "off",
+        "react/display-name": "off",
+        "react-native/no-unused-styles": "error",
+        "react-native/no-inline-styles": "warn",
+        "react-native/no-single-element-style-arrays": "warn",
+        "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
+        "linebreak-style": [
+            "error",
+            "unix"
+        ],
+       
+        "semi": [
+            "warn",
+            "always"
+        ],
+        "quotes": "off",
+        "jsx-quotes": "off",
+        "no-console": "off",
+        "object-curly-newline": ["error", {
+            "minProperties": 10,
+            "consistent": true
+        }],
+        "nonblock-statement-body-position": "off",
+        "max-len": ["error", {
+            "code": 150
+        }],
+        "prefer-template" : "off",
+        "indent": [ "warn", 2, {
+            "SwitchCase": 1    
+        } ],
+        "no-underscore-dangle": "off",
+        "no-restricted-syntax": "off",
+        // Consider turning these on later.
+        "class-methods-use-this": "off",
+        "prefer-promise-reject-errors": "off",
+
+        // Needed to tell eslinter to only look at extraneous dependencies of the package.json at the root level
+        // but not any nested package.json's (e.g. package.json in src/lib is used for module alias to avoid relative path)
+        "import/no-extraneous-dependencies": ["error", {"devDependencies": true, "packageDir": "."}]
+    },
+    "settings": {
+        "react": {
+            "version": "detect"
+        },
+        "import/resolver": {
+          "node": {
+            // Configure eslinter to be able to resolve to our 'lib' directory alias
+            "moduleDirectory": ["node_modules", "src"]
+          }
+        }
+    }
+}
