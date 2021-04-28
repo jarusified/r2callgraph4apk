@@ -1,4 +1,3 @@
-from lib.androguard import AndroGuard
 import os
 import networkx as nx
 import pathlib
@@ -7,7 +6,8 @@ from pyinstrument import Profiler
 
 from utils.logger import get_logger
 from utils.utils import get_apks_from_path, get_filename_from_path
-from lib.androzoo import AndroZoo
+from droidPerf.androzoo import AndroZoo
+from droidPerf.androguard import AndroGuard
 
 LOGGER = get_logger(__name__)
 

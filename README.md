@@ -74,22 +74,19 @@ export ANDROZOO_API_KEY = {path/to/API_KEY_FILE.az}
     ```
 
     The above script will collect all the malwares of that particular type.
-# DroidPerf
+# DroidPerf - Performance Data Collection
 DroidPerf is a HPC data collector that uses Intel VTune's Performance toolkit
 and Android's monkeyrunner tool to collect 16 critical HPCs from the application
 at runtime by simulation.
 
-## Installation and Setup
-TODO:
-
-## Usage
-TODO:
+See [here](droidPerf/README.md)
 
 # LightDriod-app
 LightDriod-app is a React-native based mobile application that provides
 explainability into when our classification algorithm tags a malware. This app
 can be used on an Android device and automatic reports will be sent and user can
 also attribute the HPCs to a particular malicious behavior.
+
 ## Setup
 
 ### React-Native

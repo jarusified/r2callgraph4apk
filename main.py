@@ -13,7 +13,7 @@ R2CG_APP_PORT = int(os.getenv("CALLFLOW_APP_PORT", 5000))
 
 def main():
     """
-    Entry point.
+    LightDroid && DroidPerf command utility. 
     """
     print(f' ----------------- r2callgraph4apk {__version__} -----------------')
 
@@ -32,13 +32,15 @@ def main():
 
     if process:
         r2cg = R2CallGraph4APK(malware_name=malware, save_dir=save_dir)
-        if download:
-            r2cg.download()
         r2cg.process()        
     elif analyze:
         r2cg = APIProvider(malware_name=malware, save_dir=save_dir)
         r2cg.analyze()
         r2cg.start(host=R2CG_APP_HOST, port=R2CG_APP_PORT)
-    
+    elif download:
+        r2cg = R2CallGraph4APK(malware_name=malware, save_dir=save_dir)
+        r2cg.download()
+        r2cg.process()        
+
 if __name__ == '__main__':
     main()
