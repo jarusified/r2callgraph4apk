@@ -28,18 +28,26 @@ def main():
     analyze = args.args["analyze"]
     save_dir = args.args['save_dir']
 
-    assert isinstance(malware, str)
+    if not isinstance(malware, str):
+        raise ValueError('Please provide a malware type to work with!')
+
+    if save_dir is None:
+        raise ValueError('Please provide a save_dir to lookup/download the apks!')
+        
+    if not process and not analyze and not download:
+        raise ValueError('Please provide a valid operation to perform, download | process | analyze')
+
 
     if process:
-        r2cg = R2CallGraph4APK(malware_name=malware, save_dir=save_dir)
-        r2cg.process()        
+        r2cg = R2CallGraph4APK(malware_name=malware)
+        r2cg.process(save_dir=save_dir)        
     elif analyze:
-        r2cg = APIProvider(malware_name=malware, save_dir=save_dir)
-        r2cg.analyze()
+        r2cg = APIProvider(malware_name=malware)
+        r2cg.analyze(save_dir=save_dir)
         r2cg.start(host=R2CG_APP_HOST, port=R2CG_APP_PORT)
     elif download:
-        r2cg = R2CallGraph4APK(malware_name=malware, save_dir=save_dir)
-        r2cg.download()
+        r2cg = R2CallGraph4APK(malware_name=malware)
+        r2cg.download(save_dir=save_dir)
         r2cg.process()        
 
 if __name__ == '__main__':

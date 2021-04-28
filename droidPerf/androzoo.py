@@ -72,9 +72,7 @@ class AndroZoo:
         _df = pd.read_csv(_apk_csv)
 
         malicious_sha_list = _df.loc[_df['ORIGINAL_APP'] == b_sha256]['PIGGYBACKED_APP']
-        
-        print(f"\tFound {len(malicious_sha_list)} malware(s)!!!")
-        
+                
         if len(malicious_sha_list) == 0:
             return []
 

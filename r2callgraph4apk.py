@@ -17,7 +17,7 @@ DATA_DIR = os.path.join(PWD, "data")
 MALWARE_NAMES = [] # TODO: Add all andorid malware types.
 
 class R2CallGraph4APK:
-    def __init__(self, malware_name: str, save_dir: str):
+    def __init__(self, malware_name: str, save_dir: str=""):
         """
         R2CallGraph4APK class.
 
@@ -26,20 +26,7 @@ class R2CallGraph4APK:
         """
         self.nxg = {} # map of nxg  {sha: <nx.DiGraph>}
         self.malware_name = malware_name
-        self.save_dir = save_dir
 
-        b_dir = os.path.join(self.save_dir, "benign")
-        m_dir = os.path.join(self.save_dir, "malicious")
-
-        self.b_sha_paths = get_apks_from_path(b_dir)
-        self.m_sha_paths = get_apks_from_path(m_dir)
-
-        self.b_shas = [get_filename_from_path(path) for path in self.b_sha_paths]
-        self.m_shas = [get_filename_from_path(path) for path in self.m_sha_paths]
-
-        self.b_ag = self._init_androguard(b_dir, self.b_sha_paths)
-        self.m_ag = self._init_androguard(m_dir, self.m_sha_paths)
-    
     def _init_androguard(self, directory, shas):
         ret = {}
         for sha in shas:
@@ -77,6 +64,9 @@ class R2CallGraph4APK:
         profiler = Profiler()
         profiler.start()
 
+        b_dir = os.path.join(save_dir, "benign")
+        m_dir = os.path.join(save_dir, "malicious")
+
         az = AndroZoo()
 
         malicious_sha256_list = az.get_malware_sha_by_name(self.malware_name)
@@ -85,7 +75,7 @@ class R2CallGraph4APK:
         
         benign_sha256_list = az.get_benign_apps(malicious_sha256_list)
     
-        print(f"2. R2CallGraph4APK could find only {len(benign_sha256_list)} benign versions.")
+        print(f"2. R2CallGraph4APK could find only {len(benign_sha256_list)} update malwares.")
         
         print(f"3. Downloading {len(benign_sha256_list)} Benign and Malicious APKs")
         
@@ -101,6 +91,15 @@ class R2CallGraph4APK:
                 print(f"\tMalware name: {_name}")
                 print(f"\tMalware type: {_type}")
                 print("\t------------------------------------------------")
+
+        self.b_sha_paths = get_apks_from_path(b_dir)
+        self.m_sha_paths = get_apks_from_path(m_dir)
+
+        self.b_shas = [get_filename_from_path(path) for path in self.b_sha_paths]
+        self.m_shas = [get_filename_from_path(path) for path in self.m_sha_paths]
+
+        self.b_ag = self._init_androguard(b_dir, self.b_sha_paths)
+        self.m_ag = self._init_androguard(m_dir, self.m_sha_paths)
 
         profiler.stop()
         print(profiler.output_text(unicode=True, color=True))
