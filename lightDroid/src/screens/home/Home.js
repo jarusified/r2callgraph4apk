@@ -35,7 +35,6 @@ const styles = StyleSheet.create({
   },
   checkbox: {
     backgroundColor: getColor('background'),
-    borderWidth: 1,
   },
   parentContainer: {
     flexDirection: 'row',
@@ -66,10 +65,10 @@ const styles = StyleSheet.create({
   },
 });
 
-export default function Home() {
+export default function Home({navigation}) {
   const [appList, setAppList] = useState([]);
   /**
-   * TODO: ING-82: Fix force re-render when update occurs
+   * TODO: Fix force re-render when update occurs
    * Calling this causes the all the components in the screen to refresh.
    * This needs to be fixed. It should not re-render the whole screen’s content,
    * but rather only the UI component related to it.
@@ -113,7 +112,7 @@ export default function Home() {
           <Text style={styles.title}>{data.title}</Text>
           <Icon
             type="font-awesome"
-            name="heart"
+            name="external-link"
             size={20}
             style={styles.checkbox}
             color={getColor('secondary')}
