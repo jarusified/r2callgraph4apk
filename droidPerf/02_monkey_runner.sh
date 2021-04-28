@@ -1,7 +1,6 @@
 #!/bin/bash
-# monkeyrunner.sh
 
-echo "STEP2:"
+echo "STEP 2:"
 echo "		1. Extract package name from 'pm list packages' command"
 echo "		2. Run MonkeyRunner with the package name"
 echo "[START]"
@@ -11,14 +10,12 @@ adb_path=$2
 
 cd $adb_path
 package_name_str=$(./adb shell pm list packages | grep $app_name)
-# echo $package_name_str
  
 package_name=$(echo $package_name_str | tr ":" "\n")
 
 cd $adb_path
 for pname in $package_name
 do
-	# echo "1>$pname"
 	if [ $pname != "package" ]
 	then
 		#remove white space

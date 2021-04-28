@@ -30,7 +30,7 @@ echo **Stay Awake**
 
 # STEP1: download simpleperf and benign apk
 cd $bashfile_path
-bash download_simpleperf_benignApk.sh $adb_path $benign_apkFile_path
+bash 01_push_apk $adb_path $benign_apkFile_path
 
 try=0
 count=0
@@ -62,9 +62,9 @@ do
 	# STEP2(monkey run) & 3(simpleperf with benign): run monkey runner and simpleperf
 	# when 80 cycles are done, uninstall benign apk and install malicious apk
 	cd $bashfile_path
-	bash monkeyrunner.sh $app_name $adb_path &
+	bash 02_monkey_runner.sh $app_name $adb_path &
 	sleep 1
-	bash simpleperf_benign.sh $desktop_path $adb_path $malicious_apkFile_path $app_num $app_name $i 15 &
+	bash 03_simpleperf_benign.sh $desktop_path $adb_path $malicious_apkFile_path $app_num $app_name $i 15 &
 	process_id=$!
 	# echo PID: $process_id
 
@@ -99,9 +99,14 @@ do
 done 
 
 # start malicious app simpleperf monitoring (repeated process like above)
-# initialize
+
 try=0
 count=0
+
+# STEP1: download simpleperf and benign apk
+cd $bashfile_path
+bash 01_push_apk $adb_path $malicious_apkFile_path
+
 for (( i=1; i<=80; i++ ))
 do
 	echo "***ITERATION $i - malicious***"
@@ -122,9 +127,9 @@ do
 
 	# STEP2(monkey run) & 4(simpleperf with malicious): run monkey runner and simpleperf
 	cd $bashfile_path
-	bash monkeyrunner.sh $app_name $adb_path &
+	bash 02_monkeyrunner.sh $app_name $adb_path &
 	sleep 1
-	bash simpleperf_malicious.sh $i 15 $desktop_path $adb_path $app_num $app_name &
+	bash 04_simpleperf_malicious.sh $i 15 $desktop_path $adb_path $app_num $app_name &
 	process_id=$!
 	# echo PID: $process_id
 

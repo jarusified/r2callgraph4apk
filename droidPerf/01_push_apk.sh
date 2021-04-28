@@ -1,6 +1,7 @@
-# download_simpleperf_benignApk.sh
+#!/bin/bash
+
 @echo off
-echo "STEP1:"
+echo "STEP 1:"
 echo "		1. Push simpleperf via adb"
 echo "		2. Install benign apk to smartphone"
 echo "[START]"
