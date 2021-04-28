@@ -1,0 +1,25 @@
+E = Easy
+M = Medium
+H = Hard
+
+P = Priority
+NP = Not Priority
+
+Existing but need work
+======================
+1. Create cmd line options for droidPerf and lightDroid. (E, P) 
+2. Setup Scripts for installation (it is too many procedures for installation.)
+(E, NP)
+3. Merge droidPerf/03_simpleperf_benign and droidPerf/04_simpleperf_malicious.
+(M, NP) - A lot of repetition is there...
+4. Simplify droidperf scripts. 
+5. Move .py files from the droidPerf outside to a separate directory. 
+6. 
+
+
+
+New features
+============
+1. Endpoints for SHAP (M, P).
+2. Fix the build for android (E, P)
+3. 
