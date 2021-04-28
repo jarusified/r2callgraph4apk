@@ -8,6 +8,7 @@ Note: This repository is under development still. Expect things to change!!
 Python >=3.7
 Nodejs >= v12.16.2
 Yarn >= 1.21.1
+
 ## Androzoo: Malicious/Benign APKs  (Optional)
 Data/APKs that we have tested our app as case studies can be found
 (here)[https://drive.google.com/file/d/1A8bOhEN2zvAwiuBMerF1FwhAuMzQH933/view?usp=sharing]
@@ -80,14 +81,18 @@ at runtime by simulation.
 
 ## Installation and Setup
 TODO:
+
 ## Usage
 TODO:
+
 # LightDriod-app
 LightDriod-app is a React-native based mobile application that provides
 explainability into when our classification algorithm tags a malware. This app
 can be used on an Android device and automatic reports will be sent and user can
 also attribute the HPCs to a particular malicious behavior.
 ## Setup
+
+### React-Native
 To get started with the development environment, please visit
 https://reactnative.dev/docs/environment-setup and follow the steps
 there to install react-native.
@@ -110,6 +115,17 @@ We'll then install `watchman`, which is a tool to watch changes in the filesyste
 ```
 brew install watchman
 ```
+### Cocoapods
+Cocoapods is a package manager for Xcode. You can install it with the following command
+```
+sudo gem install cocoapods
+```
+
+We can then use `pod` to install ios platform-specific packages that are supporting the higher level react-native modules.
+```
+cd ios
+pod install
+```
 ### Android
 To set up the development environment to build for Android, please follow the guide here https://reactnative.dev/docs/environment-setup. It supports building in MacOS, Windows, and Linux.
 
@@ -131,20 +147,14 @@ wil spawn a client-server that will render the application.
 yarn start --reset-cache
 ```
 
-## Cocoapods
-Cocoapods is a package manager for Xcode. You can install it with the following command
-```
-sudo gem install cocoapods
-```
-
-We can then use `pod` to install ios platform-specific packages that are supporting the higher level react-native modules.
-```
-cd ios
-pod install
-```
-
+To run the simulator on your system,
 ```
 yarn run-android
+```
+
+To run on a physical device, 
+```
+yarn run-android --simulator "Device Name" 
 ```
 
 ### Simulator
