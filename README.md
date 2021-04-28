@@ -131,9 +131,33 @@ wil spawn a client-server that will render the application.
 yarn start --reset-cache
 ```
 
+## Cocoapods
+Cocoapods is a package manager for Xcode. You can install it with the following command
+```
+sudo gem install cocoapods
+```
+
+We can then use `pod` to install ios platform-specific packages that are supporting the higher level react-native modules.
+```
+cd ios
+pod install
+```
+
 ```
 yarn run-android
 ```
+
+### Simulator
+If you want to launch your app in a Android emulator, please run the following command.
+```
+npx react-native run-android
+```
+You can also run it directly from within Android Studio by choosing the emulator as the device you want to run on.
+
+### Android Device
+In Android studio, please open the project by choosing the `android` directory. You can then run the application by choosing your connected device.
+
+
 
 ## Static Feature Visualizations - Web application
 This web-application provides a perspective into 

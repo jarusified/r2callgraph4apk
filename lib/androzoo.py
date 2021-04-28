@@ -14,7 +14,6 @@ API_KEY_FILE_NAME =  os.getenv("ANDROZOO_API_KEY", os.path.join(PWD, 'androzoo.a
 
 class AndroZoo:
     def __init__(self):
-        print(API_KEY_FILE_NAME)
         (self.api_key, self.input_file) = self._read_az(API_KEY_FILE_NAME)
 
     def _read_az(self, path):

@@ -13,7 +13,6 @@ LOGGER = get_logger(__name__)
 
 PWD = pathlib.Path(__file__).parent.resolve()
 DATA_DIR = os.path.join(PWD, "data")
-API_KEY_FILE_NAME =  os.getenv("ANDROZOO_API_KEY", os.path.join(PWD, 'androzoo.az'))
 
 MALWARE_NAMES = [] # TODO: Add all andorid malware types.
 
