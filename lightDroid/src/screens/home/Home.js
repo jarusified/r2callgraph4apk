@@ -14,8 +14,15 @@ import {Icon} from 'react-native-elements';
 import ViewMoreText from 'react-native-view-more-text';
 import {getColor} from 'lib/res/Assets';
 import {AppInstalledChecker} from 'react-native-check-app-install';
+import {AnimatedCircularProgress} from 'react-native-circular-progress';
+
+const {height} = Dimensions.get('window');
 
 const styles = StyleSheet.create({
+  body: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   title: {
     fontSize: 18,
     fontWeight: '400',
@@ -63,10 +70,18 @@ const styles = StyleSheet.create({
     fontWeight: '400',
     color: getColor('secondary'),
   },
+  topCircle: {
+    marginBottom: 20,
+  },
+  text: {
+    marginTop: 10,
+    alignSelf: 'center',
+  },
 });
 
 export default function Home({navigation}) {
   const [appList, setAppList] = useState([]);
+  const [maliciousApps, setMaliciousApps] = useState(5);
   /**
    * TODO: Fix force re-render when update occurs
    * Calling this causes the all the components in the screen to refresh.
@@ -115,7 +130,7 @@ export default function Home({navigation}) {
             name="external-link"
             size={20}
             style={styles.checkbox}
-            color={getColor('secondary')}
+            color={getColor('malicious')}
           />
         </TouchableOpacity>
         <View style={styles.parentContainer} />
@@ -156,6 +171,23 @@ export default function Home({navigation}) {
 
   return (
     <ScrollView>
+      <View style={styles.body}>
+        <AnimatedCircularProgress
+          style={styles.topProgressCircle}
+          size={height / 4}
+          width={20}
+          fill={(maliciousApps / appList.length) * 100}
+          tintColor={getColor('benign')}
+          backgroundColor={getColor('malicious')}>
+          {() => (
+            <View>
+              <Text style={[styles.text]}>
+                {maliciousApps + '/' + appList.length + ' Malwares'}
+              </Text>
+            </View>
+          )}
+        </AnimatedCircularProgress>
+      </View>
       <FlatList
         data={appList}
         renderItem={({item}) => (

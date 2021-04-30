@@ -10,10 +10,10 @@ function getColor(name) {
       return '#ccc';
     case 'secondary':
       return '#023858';
-    case 'tertiary':
-      return '#ffbf01'; // UC Davis's Yellow Color (#pane-content). See #pane-content of https://www.ucdavis.edu/
-    case 'dark-tertiary':
-      return '#ed8b00'; // UC Davis's Orange Color (#pane-content). See #pane-content of https://www.ucdavis.edu/
+    case 'malicious':
+      return '#D90263';
+    case 'benign':
+      return '#0952CE';
     case 'background':
       return '#fff';
     case 'dark-background':
