@@ -141,30 +141,21 @@ globally, you can run the current version of it with `npx`. The below command
 wil spawn a client-server that will render the application. 
 
 ```
-yarn start --reset-cache
+yarn react-native start --reset-cache
 ```
 
 To run the simulator on your system,
 ```
-yarn run-android
+yarn react-native run-android
 ```
 
 To run on a physical device, 
 ```
-yarn run-android --simulator "Device Name" 
+yarn react-native run-android --simulator "Device Name" 
 ```
-
-### Simulator
-If you want to launch your app in a Android emulator, please run the following command.
-```
-npx react-native run-android
-```
-You can also run it directly from within Android Studio by choosing the emulator as the device you want to run on.
 
 ### Android Device
 In Android studio, please open the project by choosing the `android` directory. You can then run the application by choosing your connected device.
-
-
 
 ## Static Feature Visualizations - Web application
 This web-application provides a perspective into 
