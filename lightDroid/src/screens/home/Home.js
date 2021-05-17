@@ -131,6 +131,9 @@ export default function Home({navigation}) {
             size={20}
             style={styles.checkbox}
             color={getColor('malicious')}
+            onPress={() => {
+              return navigation.navigate('Summary');
+            }}
           />
         </TouchableOpacity>
         <View style={styles.parentContainer} />
