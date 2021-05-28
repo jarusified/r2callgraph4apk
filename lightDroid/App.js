@@ -66,7 +66,6 @@ function App() {
         switch (pickScreen()) {
           case 'HOME_SCREEN':
             return <StackNavigatorHome />;
-            // return <></>;
           case 'LOADING_SCREEN':
           default:
             return (
