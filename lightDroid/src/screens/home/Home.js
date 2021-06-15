@@ -14,6 +14,9 @@ import {Icon} from 'react-native-elements';
 import ViewMoreText from 'react-native-view-more-text';
 import {getColor} from 'lib/res/Assets';
 import {AppInstalledChecker} from 'react-native-check-app-install';
+
+import RNAndroidAppList from 'react-native-android-app-list';
+
 import {AnimatedCircularProgress} from 'react-native-circular-progress';
 
 const {height} = Dimensions.get('window');
@@ -155,6 +158,13 @@ export default function Home({navigation}) {
       </View>
     );
   }
+
+  
+  // code to fetch all package names and their permissions
+  RNAndroidAppList.getAllPermissions().then(data=>{
+    console.log(data);
+  }); 
+
 
   const fetchAppList = async () => {
     const apps = AppInstalledChecker.getAppList();
